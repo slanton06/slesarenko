@@ -206,7 +206,6 @@ public class GraphicsDisplay extends JPanel {
                 }
                 Point2D.Double center = xyToPoint(point[0], point[1]);
 
-                // Проверка, что целая часть значения функции нечётная
                 int integerValue = point[1].intValue();
                 boolean isOdd = integerValue % 2 != 0;
 
@@ -214,7 +213,6 @@ public class GraphicsDisplay extends JPanel {
                     continue;
                 }
 
-                // Размер ромба
                 int size = 5;
                 Path2D.Double diamond = new Path2D.Double();
                 diamond.moveTo(center.x - size, center.y);
@@ -223,16 +221,19 @@ public class GraphicsDisplay extends JPanel {
                 diamond.lineTo(center.x, center.y + size);
                 diamond.closePath();
 
-                // Рисуем ромб
                 canvas.setColor(Color.MAGENTA);
                 canvas.fill(diamond);
                 canvas.setColor(Color.BLACK);
                 canvas.draw(diamond);
+
+
+                String yValue = String.format("%.2f", point[1]);
+                canvas.setFont(new Font("Serif", Font.PLAIN, 12));
+                canvas.drawString(yValue, (float) (center.x + size + 5), (float) (center.y - size));
             }
         }
         canvas.setStroke(markerStroke);
     }
-
 
 
     private void paintLabels(final Graphics2D canvas) {
