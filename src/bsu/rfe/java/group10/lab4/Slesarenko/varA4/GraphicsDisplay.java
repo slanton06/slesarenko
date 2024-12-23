@@ -7,8 +7,15 @@ import java.awt.geom.*;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import javax.imageio.ImageIO;
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+
+
 
 public class GraphicsDisplay extends JPanel {
+    private Image iconImage;
     private Double[][] graphicsData;
     private Double[][] originalData;
     private boolean showAxis = true;
@@ -64,6 +71,10 @@ public class GraphicsDisplay extends JPanel {
         areaFont = new Font("Serif", Font.BOLD, 16);
         labelsFont = new Font("Serif", 0, 10);
         GraphicsDisplay.formatter.setMaximumFractionDigits(5);
+        try { iconImage = ImageIO.read(new File("C:/Users/ANTON/Downloads/ромб.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+          }
     }
 
     public void displayGraphics(Double[][] GraphicsData, Double[][] OriginalData) {
@@ -183,61 +194,46 @@ public class GraphicsDisplay extends JPanel {
         }
     }
 
+
     protected void paintMarkers(Graphics2D canvas) {
         canvas.setStroke(markerStroke);
         canvas.setStroke(new BasicStroke(1));
-        canvas.setPaint(Color.ORANGE);
-        Ellipse2D.Double lastMarker = null;
-        int i_n = -1;
+        canvas.setPaint(Color.MAGENTA);
         for (Double[] point : graphicsData) {
-            ++i_n;
             if (point[0] >= viewport[0][0] && point[1] <= viewport[0][1] && point[0] <= viewport[1][0]) {
                 if (point[1] < this.viewport[1][1]) {
                     continue;
                 }
                 Point2D.Double center = xyToPoint(point[0], point[1]);
-                Point2D.Double corner = shiftPoint(center, 7, 7);
-                boolean even = true;
 
-                int num = point[0].intValue();
+                // Проверка, что целая часть значения функции нечётная
+                int integerValue = point[1].intValue();
+                boolean isOdd = integerValue % 2 != 0;
 
-                if(num >= 1){
-                    int x = (int) Math.sqrt(num);
-                    if(Math.pow(x,2) != num){
-                        even = false;
-                        continue;
-                    }
-                }else{
-                    even = false;
+                if (!isOdd) {
                     continue;
                 }
 
-                if (even) {
-                    canvas.setColor(Color.ORANGE);
-                }
-                Ellipse2D.Double marker = new Ellipse2D.Double();
-                marker.setFrameFromCenter(center, corner);
+                // Размер ромба
+                int size = 5;
+                Path2D.Double diamond = new Path2D.Double();
+                diamond.moveTo(center.x - size, center.y);
+                diamond.lineTo(center.x, center.y - size);
+                diamond.lineTo(center.x + size, center.y);
+                diamond.lineTo(center.x, center.y + size);
+                diamond.closePath();
 
-                if (i_n == this.selectedMarker) {
-                    lastMarker = marker;
-                } else {
-                    canvas.draw(new Line2D.Double(center.x - 5.5, center.y, center.x + 5.5, center.y));
-                    canvas.draw(new Line2D.Double(center.x, center.y - 5.5, center.x, center.y + 5.5));
-                    canvas.draw(new Line2D.Double(center.x - 5.5, center.y - 2.5, center.x - 5.5, center.y + 3));
-                    canvas.draw(new Line2D.Double(center.x + 5.5, center.y - 2.5, center.x + 5.5, center.y + 3));
-                    canvas.draw(new Line2D.Double(center.x - 2.5, center.y - 5.5, center.x + 3, center.y - 5.5));
-                    canvas.draw(new Line2D.Double(center.x - 2.5, center.y + 5.5, center.x + 3, center.y + 5.5));
-                }
+                // Рисуем ромб
+                canvas.setColor(Color.MAGENTA);
+                canvas.fill(diamond);
+                canvas.setColor(Color.BLACK);
+                canvas.draw(diamond);
             }
-        }
-        if (lastMarker != null) {
-            canvas.setColor(Color.MAGENTA);
-            canvas.setPaint(Color.MAGENTA);
-            canvas.draw(lastMarker);
-            canvas.fill(lastMarker);
         }
         canvas.setStroke(markerStroke);
     }
+
+
 
     private void paintLabels(final Graphics2D canvas) {
         canvas.setColor(Color.BLACK);
