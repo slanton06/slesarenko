@@ -1,0 +1,7 @@
+vaadin-grid::part(row).deadline-near {
+    background-color: rgba(255, 0, 0, 0.2) !important;
+}
+
+vaadin-grid::part(row).done-task {
+    opacity: 0.5;
+}
