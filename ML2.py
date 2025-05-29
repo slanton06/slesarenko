@@ -46,7 +46,7 @@ y_pred_lin_cont = lin_model.predict(x_test)
 y_pred_lin = np.rint(y_pred_lin_cont).astype(int)
 y_pred_lin = np.clip(y_pred_lin, 0, 2)
 
-print("Отчет по классификации (Линейная регрессия, после округления):")
+print("Отчет по классификации:")
 print(classification_report(y_test_encoded, y_pred_lin))
 
 conf_matrix_lin = confusion_matrix(y_test_encoded, y_pred_lin)
