@@ -15,13 +15,13 @@ print("Y shape:", Y.shape)
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=42)
 
 model = keras.Sequential([
-    keras.layers.Dense(16, activation='sigmoid', input_shape=(12,)),
+    keras.layers.Dense(12, activation='sigmoid', input_shape=(12,)),
     keras.layers.Dense(2, activation='softmax')
 ])
 
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
-history = model.fit(X_train, Y_train, epochs=50, batch_size=16, validation_data=(X_test, Y_test))
+history = model.fit(X_train, Y_train, epochs=40, batch_size=16, validation_data=(X_test, Y_test))
 
 test_loss, test_accuracy = model.evaluate(X_test, Y_test)
 print("Accuracy:", test_accuracy * 100, "%")
